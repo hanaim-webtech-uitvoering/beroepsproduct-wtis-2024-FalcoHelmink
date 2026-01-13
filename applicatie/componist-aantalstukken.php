@@ -4,26 +4,49 @@ require_once 'db_connectie.php';
 // maak verbinding met de database (zie db_connection.php)
 $db = maakVerbinding();
 
-// haal alle componisten op en tel het aantal stukken
-$query = 'select c.componistId as id, c.naam as naam, count(S.stuknr) as aantal
-          from Componist C left outer join Stuk S on C.componistId = S.componistId
-          group by C.componistId, C.naam
-          order by naam';
+// // haal alle componisten op en tel het aantal stukken
+// $query = 'select c.componistId as id, c.naam as naam, count(S.stuknr) as aantal
+//           from Componist C left outer join Stuk S on C.componistId = S.componistId
+//           group by C.componistId, C.naam
+//           order by naam';
 
-$data = $db->query($query);
+// $data = $db->query($query);
 
-$html_table = '<table>';
-$html_table = $html_table . '<tr><th>Id</th><th>Naam</th><th>Aantal stukken</th></tr>';
+// $html_table = '<table>';
+// $html_table = $html_table . '<tr><th>Id</th><th>Naam</th><th>Aantal stukken</th></tr>';
 
-while($rij = $data->fetch()) {
-  $id = $rij['id'];
-  $naam = $rij['naam'];
-  $aantal = $rij['aantal'];
+// while($rij = $data->fetch()) {
+//   $id = $rij['id'];
+//   $naam = $rij['naam'];
+//   $aantal = $rij['aantal'];
   
-  $html_table = $html_table . "<tr><td>$id</td><td>$naam</td><td>$aantal</td></tr>";
+//   $html_table = $html_table . "<tr><td>$id</td><td>$naam</td><td>$aantal</td></tr>";
+// }
+
+// $html_table = $html_table . "</table>";
+
+
+
+
+$query2 =   'select p.name as product, p.price as prijs, p.type_id as type 
+            from product p 
+             order by p.type_id';
+
+$data2 = $db->query($query2);
+
+$html_table2 = '<table>';
+$html_table2 = $html_table2 . '<tr><th>product</th><th>prijs</th><th>type</th></tr>';
+
+while($rij = $data2->fetch()) {
+  $product = $rij['product'];
+  $prijs = $rij['prijs'];
+  $type = $rij['type'];
+  
+  $html_table2 = $html_table2 . "<tr><td>$product</td><td>$prijs</td><td>$type</td></tr>";
 }
 
-$html_table = $html_table . "</table>";
+$html_table2 = $html_table2 . "</table>";
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -45,10 +68,14 @@ $html_table = $html_table . "</table>";
   </style>
   <title>Componisten stukken</title>
 </head>
+
+
+
 <body>
   <h1>Componisten met aantal geschreven stukken</h1>
   <?php 
   echo ($html_table);
+  echo ($html_table2);
   ?>
 </body>
 </html>
