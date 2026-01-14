@@ -14,7 +14,7 @@ exit();
 }
 
 loginUser($verbinding,$username,$wachtwoord);
-}else { 
+} else { 
    header("location:../Login.php"); 
    exit();
 }

@@ -14,6 +14,7 @@ function navbar() {
     if (isset($_SESSION['username'])) {
         echo '<h3>Hartelijk welkom, ' . htmlspecialchars($_SESSION['username']) . '!</h3>';
         $menu['Log Out'] = 'logout.php';
+        $menu['Account'] = 'AccountPagina.php';
 
     } else {
         $menu['Sign Up'] = 'SignUp.php';
@@ -52,6 +53,17 @@ Function Errors(){
              else if ($_GET["error"] == "geenToegang"){
                 echo "<p> Alleen toegang voor personeel";
             }   
+            
+             else if ($_GET["error"] == "geenToegangAccount"){
+                echo "<p> U moet eerst ingelogd zijn voor u de account pagina kan bereiken";
+            }  
+            else if ($_GET["error"] == "geenAantal"){
+                echo "<p> U moet eerst het aantal producten invullen dat u wilt bestellen";
+            } 
+             else if ($_GET["error"] == "usernameNietGevonden"){
+                echo "<p> De username die is ongevoerd is ongeldig ";
+            } 
+              
         }
 
     }
@@ -145,19 +157,11 @@ function createUser($verbinding, $username, $voornaam, $achternaam, $wachtwoord)
 
     $hashedWW = password_hash($wachtwoord, PASSWORD_DEFAULT);
 
-    try {
+
         $stmt->execute([$username, $hashedWW, $voornaam, $achternaam, 'Client']);
         header("location:../signup.php?error=signupGeslaagd");
         exit();
-    } 
-    catch (PDOException $e) {
-        if ($e->getCode() == 23000) { 
-            header("Location: ../signup.php?error=DubbelUsername");
-            exit();
-        } else {
-            throw $e; 
-        }
-    }
+    
 }
 
 
@@ -212,7 +216,7 @@ $MenuQuery = "
 
 $data3 = $verbinding ->query($MenuQuery);
 
-$html_table3 = '<table>';
+$html_table3 = '<table border="1" cellpadding="5" cellspacing="0">';
 $html_table3 = $html_table3 . 
 
 '<tr>
@@ -258,60 +262,51 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 
     $id = (int)$_GET['id']; 
 
-    $stmt = $verbinding->prepare("SELECT * FROM Pizza_Order WHERE order_id = ?");
+    $stmt = $verbinding->prepare("SELECT o.order_id,o.client_username,o.client_name,o.personnel_username, o.status,o.address, o.datetime,
+                                STRING_AGG(CONCAT(p.product_name, ' (', p.quantity, ')'), ', ') AS products
+                                FROM Pizza_Order o JOIN Pizza_Order_Product p ON p.order_id = o.order_id
+                                where o.order_id = ?
+                                GROUP BY o.order_id,o.client_username, o.client_name,o.personnel_username, o.status,o.datetime,o.address
+                                ORDER BY o.order_id;");
     $stmt->execute([$id]);
-    $data4 = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    if (!$data4) {
-        $html_table4 = "<p>Geen order gevonden met ID $id.</p>";
-    } else {
+$html_table4 = '<table border="1" cellpadding="5" cellspacing="0">';
+$html_table4 = $html_table4 . 
 
-        $html_table4 = '<table>';
-
-        $html_table4 .= 
-        '<tr>
-            <th>order_id</th>
-            <th>username</th>
-            <th>naam</th>
-            <th>personnel_username</th>
-            <th>datum + tijd</th>
-            <th>status</th>
-            <th>adres</th>
-            <th>update</th>
-        </tr>';
-
-        foreach ($data4 as $rij) {
-            $order_id = $rij['order_id'];
-            $client_username = $rij['client_username'];
-            $client_name = $rij['client_name'];
-            $personnel_username = $rij['personnel_username'];
-            $datetime = $rij['datetime'];
-            $status = $rij['status'];
-            $address = $rij['address'];
-
-            $html_table4 .=
-            "<tr>
-                <td>$order_id</td>
-                <td>$client_username</td>
-                <td>$client_name</td>
-                <td>$personnel_username</td>
-                <td>$datetime</td>
-                <td>$status</td>
-                <td>$address</td>
-                <td>
-                    <a href='updateOrder.php?id=$order_id'>Update</a>
-                </td>
-            </tr>";
-        }
-
-        $html_table4 .= "</table>";
+'<tr>
+    <th>order_id</th>
+    <th>username</th>
+    <th>naam</th>
+    <th>personeel</th>
+    <th>status</th>
+    <th>adres</th>
+    <th>datum</th>
+    <th>products</th>
+</tr>';
+while($rij = $stmt->fetch()){
+  $order_id = $rij['order_id'];
+  $client_username = $rij['client_username'];
+  $client_name = $rij['client_name'];
+  $personnel_username = $rij['personnel_username'];
+  $status = $rij['status'];
+  $datetime = $rij['datetime'];
+  $address = $rij['address']; 
+  $products = $rij['products'];
+  
+  $html_table4 = $html_table4 .
+    "<tr>
+        <td>$order_id</td>
+        <td>$client_username</td>
+        <td>$client_name</td>
+        <td>$address</td>
+        <td>$personnel_username</td>
+        <td>$status</td>
+        <td>$datetime</td>
+        <td>$products</td>
+    </tr>";
     }
-
-} else {
-    $html_table4 = "<p>Geen order geselecteerd of ongeldig ordernummer.</p>";
-}
-
-
+$html_table4 = $html_table4 . "</table>";
+}   
 
 function ChangeStatus($verbinding, $newStatus, $order_id){
 
@@ -321,3 +316,128 @@ function ChangeStatus($verbinding, $newStatus, $order_id){
 
     return $stmt->execute([$newStatus, $order_id]);
 }
+////////////////////////////ACCOUNT PAGINA/////////////////////////////////////////
+function TabelAccountInfo($username, $verbinding){
+
+$MenuQuery = "
+            SELECT username, first_name, last_name, address, role
+            FROM [dbo].[User]
+            WHERE username = :username
+";
+
+$stmt = $verbinding->prepare($MenuQuery);
+$stmt->execute(['username' => $username]);
+
+
+$html_table5 = '<table border="1" cellpadding="5" cellspacing="0">';
+$html_table5 = $html_table5 . 
+
+'<tr>
+    <th>Username</th>
+    <th>Voornaam</th>
+    <th>Achternaam</th>
+    <th>adres</th>
+    <th>rol</th>
+</tr>';
+// while($rij = $data5->fetch(PDO::FETCH_ASSOC)) 
+    while($rij = $stmt->fetch()){
+  $username = $rij['username'];
+  $first_name = $rij['first_name'];
+  $last_name = $rij['last_name'];
+  $address = $rij['address'];
+  $role = $rij['role'];
+
+  
+  $html_table5 = $html_table5 .
+    "<tr>
+        <td>$username</td>
+        <td>$first_name</td>
+        <td>$last_name</td>
+        <td>$address</td>
+        <td>$role</td>
+    </tr>";
+
+    }
+ $html_table5 = $html_table5 . "</table>";
+return $html_table5;
+}
+/////////////////////////////////////////////////////////////////////
+
+
+function TabelAccountOrders($username, $verbinding){
+ $MenuQuery = "
+
+                SELECT o.order_id,o.client_username,o.client_name,o.address, o.datetime,
+                STRING_AGG(CONCAT(p.product_name, ' (', p.quantity, ')'), ', ') AS products
+                FROM Pizza_Order o JOIN Pizza_Order_Product p ON p.order_id = o.order_id
+                where o.client_username= :username
+                GROUP BY o.order_id,o.client_username, o.client_name,o.datetime,o.address
+                 ORDER BY o.order_id;
+                ";
+
+$stmt = $verbinding->prepare($MenuQuery);
+$stmt->execute(['username' => $username]);
+
+
+$html_table6 = '<table border="1" cellpadding="5" cellspacing="0">';
+$html_table6 = $html_table6 . 
+
+'<tr>
+    <th>order_id</th>
+    <th>username</th>
+    <th>naam</th>
+    <th>adres</th>
+    <th>datum</th>
+    <th>products</th>
+</tr>';
+while($rij = $stmt->fetch()){
+  $order_id = $rij['order_id'];
+  $client_username = $rij['client_username'];
+  $client_name = $rij['client_name'];
+  $datetime = $rij['datetime'];
+  $address = $rij['address'];
+  $products = $rij['products'];
+  
+  $html_table6 = $html_table6 .
+    "<tr>
+        <td>$order_id</td>
+        <td>$client_username</td>
+        <td>$client_name</td>
+        <td>$address</td>
+        <td>$datetime</td>
+        <td>$products</td>
+    </tr>";
+
+}
+ $html_table6 = $html_table6 . "</table>";
+ return $html_table6;
+}
+///////////////////////Bestelfunctie AKA het grote knutsel paradijs//////////////////////////////////////////////////
+
+
+function addOrder($verbinding, $username,$clientname, $products, $address) {
+        $status = "1"; 
+        $personnel_username ='FalcoChef';
+    $sql = "INSERT INTO Pizza_Order (client_username, client_name,personnel_username, datetime, status, address) 
+            VALUES (?, ?, ?, GETDATE(), ?, ?)";
+    $stmt = $verbinding->prepare($sql);
+
+        $stmt->execute([$username, $clientname, $personnel_username, $status, $address ]);
+   $order_id = $verbinding->lastInsertId();
+    
+    // Insert products
+    foreach ($products as $product) {
+        $product_name = $product['name'];
+        $quantity = $product['quantity'];
+            if ($product_name != "" && $quantity > 0) {
+                    $stmt2 = $verbinding->prepare
+                    (
+                        "INSERT INTO Pizza_Order_Product (order_id, product_name, quantity) VALUES (?, ?, ?)"
+                    );
+                    $stmt2->execute([$order_id, $product_name, $quantity]);
+            }
+    }
+    return $order_id;
+}
+
+

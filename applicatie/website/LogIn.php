@@ -10,17 +10,14 @@ session_start();
 <body>
       <h1>Log in</h1>
       <form action="includes/LogIn.inc.php" method="POST"> 
-        <input type="text" name="Username" placeholder="Username">
-        <input type="password" name="wachtwoord" placeholder="wachtwoord">
+        <input type="text" name="Username" placeholder="Username"required>
+        <input type="password" name="wachtwoord" placeholder="wachtwoord"required>
         <button type="submit" name="submit"> log in </button>
       </form>
 </body>
 <?php
 if (isset($_GET["error"])){
-            if($_GET["error"] == "emptyinput"   ){
-                echo"<p> Vul alle velden in</p>";
-            }
-            else if ($_GET["error"] == "UserBestaatNiet"){
+             if ($_GET["error"] == "UserBestaatNiet"){
                 echo "<p> Username bestaat niet";
             }
             else if ($_GET["error"] == "VerkeerdWachtwoord"){

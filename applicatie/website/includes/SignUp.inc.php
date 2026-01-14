@@ -10,10 +10,6 @@ $verbinding = maakVerbinding();
    $wachtwoord = $_POST["wachtwoord"];
    $wachtwoord_HH = $_POST["wachtwoord_HH"];
 
-if (emptyInputSignup($username,$Voornaam, $Achternaam, $wachtwoord, $wachtwoord_HH )!== false){ 
-header("location:../signup.php?error=emptyinput"); 
-exit();
-}
 if (usernameOngeldig($username ) !== false){ 
 header("location:../signup.php?error=usernameOngeldig"); 
 exit();
