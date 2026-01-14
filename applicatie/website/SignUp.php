@@ -13,10 +13,15 @@ session_start();
 <body>
       <h1>Sign Up</h1>
       <form action="includes/signUp.inc.php" method="POST"required> 
+            <label>Username:</label><br>
         <input type="text" name="Username" placeholder="Username"required><br><br>
+            <label>Voornaam:</label><br>
         <input type="text" name="voornaam" placeholder="voornaam"required><br><br>
+            <label>Achternaam:</label><br>
         <input type="text" name="achternaam" placeholder="achternaam"required><br><br>
+            <label>Wachtwoord:</label><br>
         <input type="password" name="wachtwoord" placeholder="wachtwoord"required><br><br>
+            <label>Herhaal wachtwoord:</label><br>
         <input type="password" name="wachtwoord_HH" placeholder="wachtwoord herhalen"required><br><br>
         <button type="submit" name="submit"> SignUp </button>
       </form>

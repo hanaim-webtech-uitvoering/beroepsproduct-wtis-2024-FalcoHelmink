@@ -1,5 +1,4 @@
 <?php
-
 require_once '../db_connectie.php';
 require_once '../function.php';
 session_start();
@@ -24,8 +23,8 @@ if (isset($_POST["submit"])) {
         }
     }
 
-    addOrder($db, $username, $clientname, $products,$address);
-
-    unset($_SESSION['product_count'])
-}  
+    MaakOrder($db, $username, $clientname, $products,$address);
+    unset($_SESSION['product_count']);
+    header("Location: ../AccountPagina.php");
+}  else header("Location: ProductenAantal.php");
 ?>

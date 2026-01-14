@@ -17,16 +17,13 @@ $_SESSION['product_count'] = $product_count;
 ?>
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Order Products</title>
-</head>
 <body>
 <?php
 Navbar();
 Errors();
 ?>
 
-<h2>Order Your Products</h2>
+<h2>Bestel uw producten</h2>
 <form method="POST" action="Includes/Bestellen.inc.php">
     <label>Username:</label><br>
     <input type="text" name="username" required><br>
@@ -35,33 +32,11 @@ Errors();
     <input type="text" name="clientname" required><br>
 
     <label>Address:</label><br>
-    <input type="text" name="Adres" required><br><br>
+    <input type="text" name="Adres" placeholder="bakkerstraat 4 Amsterdam, 1234AB"required><br><br>
 
 <?php
-
-
-
-
-require_once 'db_connectie.php';
-$db = maakVerbinding();
-
-$stmt = $db->query("SELECT name FROM Product");
-$all_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-for ($i = 0; $i < $product_count; $i++):
+dynamischBestel($db, $product_count); 
 ?>
-    <label>Product <?php echo $i + 1; ?>:</label><br>
-    <select name="productname[]" required>
-        <option value="">-- Choose product --</option>
-        <?php foreach ($all_products as $p): ?>
-            <option value="<?php echo htmlspecialchars($p['name']); ?>">
-                <?php echo htmlspecialchars($p['name']); ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
-    <label>Quantity:</label>
-    <input type="number" name="quantity[]" min="1" value="1" required><br><br>
-<?php endfor; ?>
 
 <input type="submit" name="submit" value="Add Order">
 

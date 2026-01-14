@@ -8,7 +8,8 @@ function navbar() {
 
     $menu = [
         'Privacypagina' => 'privacyPagina.php',
-        'Menu' => 'menuPagina.php'
+        'Menu' => 'menuPagina.php',
+        'bestellen' => 'ProductenAantal.php'
     ];
 
     if (isset($_SESSION['username'])) {
@@ -339,7 +340,7 @@ $html_table5 = $html_table5 .
     <th>adres</th>
     <th>rol</th>
 </tr>';
-// while($rij = $data5->fetch(PDO::FETCH_ASSOC)) 
+
     while($rij = $stmt->fetch()){
   $username = $rij['username'];
   $first_name = $rij['first_name'];
@@ -361,7 +362,7 @@ $html_table5 = $html_table5 .
  $html_table5 = $html_table5 . "</table>";
 return $html_table5;
 }
-/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////ACCOUNT PAGINA
 
 
 function TabelAccountOrders($username, $verbinding){
@@ -412,10 +413,10 @@ while($rij = $stmt->fetch()){
  $html_table6 = $html_table6 . "</table>";
  return $html_table6;
 }
-///////////////////////Bestelfunctie AKA het grote knutsel paradijs//////////////////////////////////////////////////
+///////////////////////Bestelfunctie//////////////////////////////////////////////////
 
 
-function addOrder($verbinding, $username,$clientname, $products, $address) {
+function MaakOrder($verbinding, $username,$clientname, $products, $address) {
         $status = "1"; 
         $personnel_username ='FalcoChef';
     $sql = "INSERT INTO Pizza_Order (client_username, client_name,personnel_username, datetime, status, address) 
@@ -425,7 +426,6 @@ function addOrder($verbinding, $username,$clientname, $products, $address) {
         $stmt->execute([$username, $clientname, $personnel_username, $status, $address ]);
    $order_id = $verbinding->lastInsertId();
     
-    // Insert products
     foreach ($products as $product) {
         $product_name = $product['name'];
         $quantity = $product['quantity'];
@@ -440,4 +440,24 @@ function addOrder($verbinding, $username,$clientname, $products, $address) {
     return $order_id;
 }
 
+function dynamischBestel($db,$product_count){
+$stmt = $db->query("SELECT name FROM Product");
+$all_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+
+for ($i = 0; $i < $product_count; $i++):
+?>
+    <label>Product <?php echo $i + 1; ?>:</label><br>
+    <select name="productname[]" required>
+        <option value="">-- Choose product --</option>
+         <?php foreach ($all_products as $p): ?>
+            <option value="<?php echo htmlspecialchars($p['name']); ?>">
+                <?php echo htmlspecialchars($p['name']); ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+    <label>Aantal:</label>
+    <input type="number" name="quantity[]" min="1" value="1" required><br><br>
+<?php endfor; }
+
+        
