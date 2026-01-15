@@ -151,15 +151,15 @@ function dubbelUsername($verbinding, $username) {
 
 
 
-function createUser($verbinding, $username, $voornaam, $achternaam, $wachtwoord) {
-    $sql = "INSERT INTO [dbo].[User] (username, password, first_name, last_name, role) 
-            VALUES (?, ?, ?, ?, ?)";
+function createUser($verbinding, $username, $voornaam, $achternaam, $address, $wachtwoord) {
+    $sql = "INSERT INTO [dbo].[User] (username, password, first_name, last_name,address, role) 
+            VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $verbinding->prepare($sql);
 
     $hashedWW = password_hash($wachtwoord, PASSWORD_DEFAULT);
 
 
-        $stmt->execute([$username, $hashedWW, $voornaam, $achternaam, 'Client']);
+        $stmt->execute([$username, $hashedWW, $voornaam, $achternaam, $address ,'Client']);
         header("location:../signup.php?error=signupGeslaagd");
         exit();
     

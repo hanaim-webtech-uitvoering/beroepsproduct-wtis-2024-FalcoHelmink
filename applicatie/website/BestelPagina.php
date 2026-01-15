@@ -31,10 +31,10 @@ Errors();
     <label>Username:</label><br>
     <input type="text" name="username" required><br>
 
-    <label>Client Name:</label><br>
+    <label>Voor + achternaam:</label><br>
     <input type="text" name="clientname" required><br>
 
-    <label>Address:</label><br>
+    <label>Adres:</label><br>
     <input type="text" name="Adres" placeholder="bakkerstraat 4 Amsterdam, 1234AB"required><br><br>
 
 <?php
@@ -43,7 +43,8 @@ dynamischBestel($db, $product_count);
 
 <input type="submit" name="submit" value="Add Order">
 
- <?php Footer(); 
+ <?php 
+ Footer(); 
  ?>
 </body>
 </html>

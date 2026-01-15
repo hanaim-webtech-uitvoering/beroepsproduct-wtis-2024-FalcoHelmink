@@ -19,6 +19,8 @@ session_start();
         <input type="text" name="voornaam" placeholder="voornaam"required><br><br>
             <label>Achternaam:</label><br>
         <input type="text" name="achternaam" placeholder="achternaam"required><br><br>
+            <label>Adres:</label><br>
+        <input type="text" name="Adres" placeholder="Straataam 1 PLaatsnaam, Postcode"required><br><br>
             <label>Wachtwoord:</label><br>
         <input type="password" name="wachtwoord" placeholder="wachtwoord"required><br><br>
             <label>Herhaal wachtwoord:</label><br>

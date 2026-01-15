@@ -7,6 +7,7 @@ $verbinding = maakVerbinding();
    $username = $_POST["Username"];
    $Voornaam = $_POST["voornaam"];
    $Achternaam = $_POST["achternaam"];
+   $Adres = $_POST["Adres"];
    $wachtwoord = $_POST["wachtwoord"];
    $wachtwoord_HH = $_POST["wachtwoord_HH"];
 
@@ -25,7 +26,7 @@ header("location:../signup.php?error=WachtoordNietGelijk");
 exit();
 }
 
-CreateUser($verbinding,$username,$Voornaam, $Achternaam, $wachtwoord);
+CreateUser($verbinding,$username,$Voornaam, $Achternaam, $Adres, $wachtwoord);
 } else { 
    header("location:../signup.php"); 
    exit();
