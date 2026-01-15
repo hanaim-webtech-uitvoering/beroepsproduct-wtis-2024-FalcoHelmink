@@ -24,6 +24,9 @@ Errors();
 ?>
 
 <h2>Bestel uw producten</h2>
+<h3>Om misbruik te voorkomen wordt er een maximaal aantal van 5 per product gehanteerd </h3>
+<h3>Bij verdenking van misbruik wordt de bestelling geanuleerd. Misbruik kan worden bestraft.</h3>
+<h5>Om annulering te voorkoemn raden wij aan om grote bestellingen telefonisch te bestellen. een bestelling van meer dan 7 pizza's wordt beschouwd als groot</h5>
 <form method="POST" action="Includes/Bestellen.inc.php">
     <label>Username:</label><br>
     <input type="text" name="username" required><br>
@@ -40,6 +43,7 @@ dynamischBestel($db, $product_count);
 
 <input type="submit" name="submit" value="Add Order">
 
-   
+ <?php Footer(); 
+ ?>
 </body>
 </html>

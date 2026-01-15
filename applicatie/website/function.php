@@ -420,7 +420,7 @@ function MaakOrder($verbinding, $username,$clientname, $products, $address) {
         $status = "1"; 
         $personnel_username ='FalcoChef';
     $sql = "INSERT INTO Pizza_Order (client_username, client_name,personnel_username, datetime, status, address) 
-            VALUES (?, ?, ?, GETDATE(), ?, ?)";
+            VALUES (?, ?, ?, Cast(GETDATE()as smalldatetime), ?, ?)";
     $stmt = $verbinding->prepare($sql);
 
         $stmt->execute([$username, $clientname, $personnel_username, $status, $address ]);
@@ -457,7 +457,7 @@ for ($i = 0; $i < $product_count; $i++):
         <?php endforeach; ?>
     </select>
     <label>Aantal:</label>
-    <input type="number" name="quantity[]" min="1" value="1" required><br><br>
+    <input type="number" name="quantity[]" min="1" max="10" value="1" required><br><br>
 <?php endfor; }
 
         
