@@ -3,6 +3,7 @@ require_once 'db_connectie.php';
 $db = maakVerbinding();
 require_once 'function.php';
 session_start();
+CheckPersoneel();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,7 +16,7 @@ session_start();
 </head>
 
 <body>
-  <h1>Orders</h1>
+  <h1>Bestellingen</h1>
   <?php 
   echo ($html_table4);
   ?>

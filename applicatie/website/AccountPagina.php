@@ -3,11 +3,8 @@ require_once 'db_connectie.php';
 $db = maakVerbinding();
 require_once 'function.php';
 session_start();
+CheckIngelogd()
 
-if (!isset($_SESSION['username']) ) {
-header("location:menuPagina.php?error=geenToegangAccount"); 
-exit();
-}
 $html_table5 = TabelAccountInfo(($_SESSION['username']), $db);
 $html_table6 = TabelAccountOrders($_SESSION['username'], $db);
 

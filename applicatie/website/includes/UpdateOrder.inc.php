@@ -4,10 +4,8 @@ require_once '../function.php';
 $verbinding = maakVerbinding();
 session_start();
 
-if (!isset($_SESSION['Rol']) || $_SESSION['Rol'] !== 'personnel') {
-header("location:../menuPagina.php?error=geenToegang"); 
-exit();
-}
+CheckPersoneel()
+
 $newStatus = $_POST["status"];
 $order_id = $_POST["order_id"];
 

@@ -4,12 +4,7 @@ $db = maakVerbinding();
 require_once 'function.php';
 session_start();
 
-if (!isset($_SESSION['Rol']) || $_SESSION['Rol'] !== 'personnel') {
-header("location:menuPagina.php?error=geenToegang"); 
-exit();
-}
-
-
+CheckPersoneel()
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +17,7 @@ exit();
 </head>
 
 <body>
-  <h1>Orders</h1>
+  <h1>Bestellingen</h1>
   <?php 
   echo ($html_table3);
   ?>

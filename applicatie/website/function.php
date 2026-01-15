@@ -21,7 +21,7 @@ function navbar() {
         $menu['Sign Up'] = 'SignUp.php';
         $menu['Log In']  = 'LogIn.php';
     } if (isset($_SESSION['Rol'])&& $_SESSION['Rol'] === 'personnel'){
-        $menu['Orders'] = 'OrderPagina.php';
+        $menu['Bestellingen'] = 'OrderPagina.php';
     }
 
     echo '<nav>';
@@ -461,3 +461,17 @@ for ($i = 0; $i < $product_count; $i++):
 <?php endfor; }
 
         
+////////////////////////////////////Toegang controleren ///////////////////////////////////////////////
+function CheckPersoneel(){
+if (!isset($_SESSION['Rol']) || $_SESSION['Rol'] !== 'personnel') {
+header("location:/website/menuPagina.php?error=geenToegang"); 
+exit();
+    }
+}
+
+function CheckIngelogd(){
+if (!isset($_SESSION['username']) ) {
+header("location:menuPagina.php?error=geenToegangAccount"); 
+exit();
+    }
+}
